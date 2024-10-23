@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
-
+// test
 public class BaseBallGame {
     Scanner sc = new Scanner(System.in);
 
@@ -17,7 +17,8 @@ public class BaseBallGame {
                     difficulty = controlDifficulty(difficulty);
                     break;
                 case "1":
-                    tryCount.add(gameStart(difficulty));
+                    int result = gameStart(difficulty);
+                    tryCount.add(result);
                     break;
                 case "2":
                     showGameRecord(tryCount);
@@ -27,22 +28,6 @@ public class BaseBallGame {
                 default:
                     System.out.println("0, 1, 2, 3 중에 입력해주세요");
             }
-        }
-    }
-
-    private void showGameRecord(ArrayList<Integer> tryCount) {
-        if (!tryCount.isEmpty()) {
-            int index = 1;
-            for (Integer i : tryCount) {
-                if (i == -1) {
-                    System.out.printf("%d 번째 게임은 실패\n", index);
-                } else {
-                    System.out.printf("%d 번째 게임 시도 횟수 : %d\n", index, i);
-                }
-                index++;
-            }
-        } else {
-            System.out.println("아직 게임을 플레이 한 기록이 없습니다.");
         }
     }
 
@@ -63,55 +48,75 @@ public class BaseBallGame {
     private int gameStart(int difficulty) {
         ArrayList<Integer> answerList = generateNumber(difficulty);
         int tryCount = 0;
-        int endGame = 30;
+        int maxTry = 30;
 
         while (true) {
             int userInputNumber = inputAnswer(difficulty);
-            if (userInputNumber != 0) {
-                tryCount++;
-                if (isAnswer(userInputNumber, answerList)) {
-                    System.out.println("정답");
-                    return tryCount;
-                } else {
-                    if (tryCount == endGame) {
-                        System.out.println("야구게임 실패하셨습니다.");
-                        return -1;
-                    }
 
-                    int[] strikeAndBallArr = countStrikeAndBall(userInputNumber, answerList);
-                    printStrikeAndBall(strikeAndBallArr);
-
-                    if (tryCount % (endGame / difficulty) == 0) {
-                        showHint(answerList, tryCount / (endGame / difficulty));
-                    }
-                }
-            } else {
+            if (userInputNumber == 0) {
                 System.out.println("다시 입력해주세요!");
+                continue;
+            }
+
+            tryCount++;
+            if (isAnswer(userInputNumber, answerList)) {
+                System.out.println("정답");
+                return tryCount;
+            } else if (tryCount == maxTry) {
+                System.out.println("야구게임 실패하셨습니다.");
+                return -1;
+            } else {
+                int[] strikeAndBallArr = countStrikeAndBall(userInputNumber, answerList);
+                printStrikeAndBall(strikeAndBallArr);
+
+                if (tryCount % (maxTry / difficulty) == 0) {
+                    showHint(answerList, tryCount / (maxTry / difficulty));
+                }
             }
         }
     }
 
-    private void showHint(ArrayList<Integer> answerList, int digit) {
-        for (int i = 0; i < digit; i++) {
-            System.out.printf("%d 번째 자리는 %d 입니다.\n", i + 1, answerList.get(i));
+    private ArrayList<Integer> generateNumber(int difficulty) {
+        ArrayList<Integer> randomNumberList = new ArrayList<>();
+
+        while (randomNumberList.size() < difficulty) {
+            int randomNumber = (int) (Math.random() * 9 + 1);
+            if (!randomNumberList.contains(randomNumber)) {
+                randomNumberList.add(randomNumber);
+            }
+        }
+        System.out.println(randomNumberList);
+        return randomNumberList;
+    }
+
+    private int inputAnswer(int difficulty) {
+        System.out.println("숫자를 입력해주세요");
+        String number = sc.nextLine();
+
+        if (number.length() > difficulty) {
+            return 0;
+        } else {
+            try {
+                return Integer.parseInt(number);
+            } catch (NumberFormatException e) {
+                return 0;
+            }
         }
     }
 
-    private void printStrikeAndBall(int[] strikeAndBallArr) {
-        StringBuilder tempStr = new StringBuilder();
-        int strike = strikeAndBallArr[0];
-        int ball = strikeAndBallArr[1];
+    private boolean isAnswer(int userInputNumber, ArrayList<Integer> answerList) {
+        int answerNumber = listNumberToIntNumber(answerList);
+        return answerNumber == userInputNumber;
+    }
 
-        if (strike > 0) {
-            tempStr.append(strike).append(" 스트라이크");
+    private int listNumberToIntNumber(ArrayList<Integer> randomNumberList) {
+        int powNum = randomNumberList.size() - 1;
+        int intNumber = 0;
+
+        for (Integer integer : randomNumberList) {
+            intNumber += integer * (int) Math.pow(10, (powNum--));
         }
-        if (ball > 0) {
-            tempStr.append(ball).append(" 볼");
-        }
-        if (strike == 0 && ball == 0) {
-            tempStr.append("아웃");
-        }
-        System.out.println(tempStr);
+        return intNumber;
     }
 
     private int[] countStrikeAndBall(int userInputNumber, ArrayList<Integer> answerList) {
@@ -137,59 +142,42 @@ public class BaseBallGame {
         return strikeAndBallArr;
     }
 
-    private ArrayList<Integer> generateNumber(int difficulty) {
-        ArrayList<Integer> randomNumberList = new ArrayList<>();
+    private void printStrikeAndBall(int[] strikeAndBallArr) {
+        StringBuilder tempStr = new StringBuilder();
+        int strike = strikeAndBallArr[0];
+        int ball = strikeAndBallArr[1];
 
-        while (randomNumberList.size() < difficulty) {
-            int randomNumber = (int) (Math.random() * 9 + 1);
-            if (!randomNumberList.contains(randomNumber)) {
-                randomNumberList.add(randomNumber);
+        if (strike > 0) {
+            tempStr.append(strike).append(" 스트라이크");
+        }
+        if (ball > 0) {
+            tempStr.append(ball).append(" 볼");
+        }
+        if (strike == 0 && ball == 0) {
+            tempStr.append("아웃");
+        }
+        System.out.println(tempStr);
+    }
+
+    private void showHint(ArrayList<Integer> answerList, int digit) {
+        for (int i = 0; i < digit; i++) {
+            System.out.printf("%d 번째 자리는 %d 입니다.\n", i + 1, answerList.get(i));
+        }
+    }
+
+    private void showGameRecord(ArrayList<Integer> tryCount) {
+        if (!tryCount.isEmpty()) {
+            int index = 1;
+            for (Integer i : tryCount) {
+                if (i == -1) {
+                    System.out.printf("%d 번째 게임은 실패\n", index);
+                } else {
+                    System.out.printf("%d 번째 게임 시도 횟수 : %d\n", index, i);
+                }
+                index++;
             }
-        }
-        System.out.println(randomNumberList);
-        return randomNumberList;
-    }
-
-    private boolean isAnswer(int userInputNumber, ArrayList<Integer> answerList) {
-        int answerNumber = listNumberToIntNumber(answerList);
-        return answerNumber == userInputNumber;
-    }
-
-    private int listNumberToIntNumber(ArrayList<Integer> randomNumberList) {
-        int powNum = randomNumberList.size() - 1;
-        int intNumber = 0;
-
-        for (Integer integer : randomNumberList) {
-            intNumber += integer * (int) Math.pow(10, (powNum--));
-        }
-        return intNumber;
-    }
-
-    private int inputAnswer(int difficulty) {
-        System.out.println("숫자를 입력해주세요");
-        String number = sc.nextLine();
-
-        if (number.length() > difficulty) {
-            return 0;
         } else {
-            try {
-                return Integer.parseInt(number);
-            } catch (NumberFormatException e) {
-                return 0;
-            }
+            System.out.println("아직 게임을 플레이 한 기록이 없습니다.");
         }
     }
 }
-
-
-/*
-    - 필수기능 정리
-    1. 정답 숫자 생성 (3 자리수, 1~9, 중복 X)
-    2. 정답 입력하기
-    3. 스트라이크, 볼 , 아웃 판별
-    4. 이어하기 while
-
-    - 도전기능 정리
-    lv 3 - 게임 기록
-    lv 4 - 게임 난이도 조절
- */
