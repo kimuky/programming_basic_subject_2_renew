@@ -1,114 +1,109 @@
 import java.util.ArrayList;
 import java.util.Scanner;
-// test
+
 public class BaseBallGame {
     Scanner sc = new Scanner(System.in);
 
-    public void play() {
-        boolean isRunning = true;
-        int difficulty = 3;
-        ArrayList<Integer> tryCount = new ArrayList<>();
+    public static void main(String[] args) {
+        BaseBallGame baseBallGame = new BaseBallGame();
+        baseBallGame.play(new GameSetting(), new RandomNumberGenerator());
+    }
+
+    public void play(GameSetting gameSetting, RandomNumberGenerator randomNumberGenerator) {
+        boolean isRunning = true; // 메인을 돌아가게 하는 상태
+        ArrayList<Integer> tryCount = new ArrayList<>(); //시도횟수를 저장하는 콜렉션
 
         while (isRunning) {
             System.out.println("0. 게임 난이도 설정 1. 게임 시작하기 2. 게임 기록보기 3. 종료하기");
             String option = sc.nextLine();
-            switch (option) {
-                case "0":
-                    difficulty = controlDifficulty(difficulty);
+
+            // option 을 enum 을 통해 관리
+            GameOption gameOption = GameOption.option(option);
+
+            switch (gameOption) {
+                case SET_DIFFICULTY: //난이도 조절
+                    gameSetting.setDifficulty();
                     break;
-                case "1":
-                    int result = gameStart(difficulty);
-                    tryCount.add(result);
+                case START_GAME: // 게임시작
+                    int result = gameStart(gameSetting, randomNumberGenerator); // 게임결과를 result 에 저장
+                    tryCount.add(result); // 해당 결과를 콜렉션에 저장
                     break;
-                case "2":
-                    showGameRecord(tryCount);
+                case SHOW_RECORD: // 게임기록 보기
+                    showGameRecord(tryCount, gameSetting.getMAX_TRY());
                     break;
-                case "3":
+                case EXIT: // 무한루프 종료
                     isRunning = false;
-                default:
+                case ERROR: // 0, 1 ,2 , 3 중 입력하지않으면 error
                     System.out.println("0, 1, 2, 3 중에 입력해주세요");
             }
         }
     }
 
-    private int controlDifficulty(int currentDifficulty) {
-        System.out.println("난이도를 설정해주세요 3,4,5");
-        String difficulty = sc.nextLine();
-        return switch (difficulty) {
-            case "3" -> 3;
-            case "4" -> 4;
-            case "5" -> 5;
-            default -> {
-                System.out.printf("잘못 입력하셨습니다. 기존 난이도 %d으로 설정하겠습니다.\n", currentDifficulty);
-                yield currentDifficulty;
-            }
-        };
-    }
-
-    private int gameStart(int difficulty) {
-        ArrayList<Integer> answerList = generateNumber(difficulty);
+    private int gameStart(GameSetting gameSetting, RandomNumberGenerator randomNumberGenerator) {
+        // 난이도와 종료 횟수 지정
+        int difficulty = gameSetting.getDifficulty();
+        int MAX_TRY = gameSetting.getMAX_TRY();
         int tryCount = 0;
-        int maxTry = 30;
 
+        // 난수를 answerList 에 저장
+        ArrayList<Integer> answerList = randomNumberGenerator.generateNumber(difficulty);
+
+        // 맞출때까지 무한루프
         while (true) {
+            // 유저 입력
             int userInputNumber = inputAnswer(difficulty);
 
-            if (userInputNumber == 0) {
-                System.out.println("다시 입력해주세요!");
-                continue;
-            }
-
+            // 시도횟수 증가
             tryCount++;
-            if (isAnswer(userInputNumber, answerList)) {
-                System.out.println("정답");
+
+            // 스트라이크 볼 카운트
+            int[] strikeAndBallArr = countStrikeAndBall(userInputNumber, answerList);
+
+            // 스트라이크 볼 출력
+            printStrikeAndBall(strikeAndBallArr);
+
+            /* 힌트 출력
+             * 3자리수는 10, 20, 30 마다 출력
+             * 4자리수는 7, 14 ,21, 28 마다 출력
+             * 5자리수는 6, 12 ,18, 24, 60 마다 출력
+             * MAXTRY 는 파이널 상수 30
+             */
+            if (tryCount % (MAX_TRY / difficulty) == 0) {
+                showHint(answerList, tryCount / (MAX_TRY / difficulty));
+            }
+
+            // 종료 로직, 정답 이거나 종료횟수까지 맞추지 못하면 시도횟수를 반환
+            if (isAnswer(userInputNumber, answerList) || tryCount == MAX_TRY) {
                 return tryCount;
-            } else if (tryCount == maxTry) {
-                System.out.println("야구게임 실패하셨습니다.");
-                return -1;
-            } else {
-                int[] strikeAndBallArr = countStrikeAndBall(userInputNumber, answerList);
-                printStrikeAndBall(strikeAndBallArr);
-
-                if (tryCount % (maxTry / difficulty) == 0) {
-                    showHint(answerList, tryCount / (maxTry / difficulty));
-                }
             }
         }
     }
 
-    private ArrayList<Integer> generateNumber(int difficulty) {
-        ArrayList<Integer> randomNumberList = new ArrayList<>();
-
-        while (randomNumberList.size() < difficulty) {
-            int randomNumber = (int) (Math.random() * 9 + 1);
-            if (!randomNumberList.contains(randomNumber)) {
-                randomNumberList.add(randomNumber);
-            }
-        }
-        System.out.println(randomNumberList);
-        return randomNumberList;
-    }
-
+    // 유저가 문제없는 값을 입력할 때까지 무한 루프
     private int inputAnswer(int difficulty) {
-        System.out.println("숫자를 입력해주세요");
-        String number = sc.nextLine();
+        while (true) {
+            System.out.println("숫자를 입력해주세요");
+            String number = sc.nextLine();
 
-        if (number.length() > difficulty) {
-            return 0;
-        } else {
-            try {
-                return Integer.parseInt(number);
-            } catch (NumberFormatException e) {
-                return 0;
+            if (number.length() == difficulty) {
+                try {
+                    return Integer.parseInt(number);
+                } catch (NumberFormatException e) {
+                    System.out.println("숫자만 입력해주세요!");
+                }
+            } else {
+                System.out.println("다시 입력해주세요");
             }
         }
     }
 
+    // 정답판별
     private boolean isAnswer(int userInputNumber, ArrayList<Integer> answerList) {
         int answerNumber = listNumberToIntNumber(answerList);
         return answerNumber == userInputNumber;
     }
 
+    // 난수로 생성된 배열을 인트형으로 변환하여 반환
     private int listNumberToIntNumber(ArrayList<Integer> randomNumberList) {
         int powNum = randomNumberList.size() - 1;
         int intNumber = 0;
@@ -119,17 +114,23 @@ public class BaseBallGame {
         return intNumber;
     }
 
+    // 스트라이크와 볼을 세어주는 로직
     private int[] countStrikeAndBall(int userInputNumber, ArrayList<Integer> answerList) {
         int[] userInputNumberArr = new int[answerList.size()];
         int index = userInputNumberArr.length - 1;
+
+        // strikeAndBallArr[0] = 스트라이크
+        // strikeAndBallArr[1] = 볼
         int[] strikeAndBallArr = new int[2];
 
+        // 사용자가 입력한 숫자배열을 int로 변환
         for (int i = index; i >= 0; i--) {
             int num = userInputNumber % 10;
             userInputNumberArr[i] = num;
             userInputNumber /= 10;
         }
 
+        // 스트라이크 볼 판별
         for (int i = 0; i < answerList.size(); i++) {
             if (answerList.contains(userInputNumberArr[i])) {
                 if (userInputNumberArr[i] == answerList.get(i)) {
@@ -142,11 +143,13 @@ public class BaseBallGame {
         return strikeAndBallArr;
     }
 
+    // 스트라이크 볼 출력
     private void printStrikeAndBall(int[] strikeAndBallArr) {
         StringBuilder tempStr = new StringBuilder();
         int strike = strikeAndBallArr[0];
         int ball = strikeAndBallArr[1];
 
+        // 한줄로 출력해주기 위해 이런 로직
         if (strike > 0) {
             tempStr.append(strike).append(" 스트라이크");
         }
@@ -159,17 +162,22 @@ public class BaseBallGame {
         System.out.println(tempStr);
     }
 
+    // 힌트 출력
     private void showHint(ArrayList<Integer> answerList, int digit) {
         for (int i = 0; i < digit; i++) {
             System.out.printf("%d 번째 자리는 %d 입니다.\n", i + 1, answerList.get(i));
         }
     }
 
-    private void showGameRecord(ArrayList<Integer> tryCount) {
+    /* 게임기록 보기
+     * 최대시도횟수라면 실패
+     * 아니라면 시도횟수를 보여줌
+     */
+    private void showGameRecord(ArrayList<Integer> tryCount, int MAX_TRY) {
         if (!tryCount.isEmpty()) {
             int index = 1;
             for (Integer i : tryCount) {
-                if (i == -1) {
+                if (i == MAX_TRY) {
                     System.out.printf("%d 번째 게임은 실패\n", index);
                 } else {
                     System.out.printf("%d 번째 게임 시도 횟수 : %d\n", index, i);
