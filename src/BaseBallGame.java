@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
-
+// gitTest
 public class BaseBallGame {
     Scanner sc = new Scanner(System.in);
 
