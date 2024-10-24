@@ -387,50 +387,51 @@
       - 3자리수가 힌트 제공은 시도횟수가 (20, 40, 60) 때 제공
       - 4자리수가 힌트 제공은 시도횟수가 (15, 30, 45, 60) 때 제공
       - 5자리수가 힌트 제공은 시도횟수가 (12, 24, 36, 48 , 60) 때 제공
+    - 
       
-      ```java
-      // 해당 로직을 수정
-      if (tryCount % (MAX_TRY / difficulty) == 0 && tryCount < MAX_TRY) {
-         showHint(answerList, tryCount / (MAX_TRY / difficulty));
-      }
-      ```
+    ```java
+    // 해당 로직을 수정
+    if (tryCount % (MAX_TRY / difficulty) == 0 && tryCount < MAX_TRY) {
+        showHint(answerList, tryCount / (MAX_TRY / difficulty));
+    }
+    ```
 
-      ```java
-      // 전체 로직
-       private int gameStart(GameSetting gameSetting, RandomNumberGenerator randomNumberGenerator) {
-         // 난이도와 종료 횟수 지정
-         int difficulty = gameSetting.getDifficulty();
-         int MAX_TRY = gameSetting.getMAX_TRY();
-         int tryCount = 0;
+    ```java
+    // 전체 로직
+      private int gameStart(GameSetting gameSetting, RandomNumberGenerator randomNumberGenerator) {
+        // 난이도와 종료 횟수 지정
+        int difficulty = gameSetting.getDifficulty();
+        int MAX_TRY = gameSetting.getMAX_TRY();
+        int tryCount = 0;
 
-         // 난수를 answerList 에 저장
-         ArrayList<Integer> answerList = randomNumberGenerator.generateNumber(difficulty);
+        // 난수를 answerList 에 저장
+        ArrayList<Integer> answerList = randomNumberGenerator.generateNumber(difficulty);
 
-         // 맞출때까지 무한루프
-         while (true) {
-             // 유저 입력
-             int userInputNumber = inputAnswer(difficulty);
+        // 맞출때까지 무한루프
+        while (true) {
+            // 유저 입력
+            int userInputNumber = inputAnswer(difficulty);
 
-             // 시도횟수 증가
-             tryCount++;
+            // 시도횟수 증가
+            tryCount++;
 
-             int[] strikeAndBallArr = countStrikeAndBall(userInputNumber, answerList);
+            int[] strikeAndBallArr = countStrikeAndBall(userInputNumber, answerList);
 
-             printStrikeAndBall(strikeAndBallArr);
+            printStrikeAndBall(strikeAndBallArr);
 
-             // TODO: 로직이 어색.. 오류는 나지 않지만 추가로 고민해볼것
-             // 현 상황에서는 버그가 나지 않지만 최소공배수 기준으로 나눠서 보여주는 방법도..
-             if (tryCount % (MAX_TRY / difficulty) == 0 && tryCount < MAX_TRY) {
-                 showHint(answerList, tryCount / (MAX_TRY / difficulty));
-             }
+            // TODO: 로직이 어색.. 오류는 나지 않지만 추가로 고민해볼것
+            // 현 상황에서는 버그가 나지 않지만 최소공배수 기준으로 나눠서 보여주는 방법도..
+            if (tryCount % (MAX_TRY / difficulty) == 0 && tryCount < MAX_TRY) {
+                showHint(answerList, tryCount / (MAX_TRY / difficulty));
+            }
 
-             // 종료 로직, 정답 이거나 종료횟수까지 맞추지 못하면 시도횟수를 반환
-             if (isAnswer(userInputNumber, answerList) || tryCount == MAX_TRY) {
-                 return tryCount;
-             }
-         }
-      }
-      ```
+            // 종료 로직, 정답 이거나 종료횟수까지 맞추지 못하면 시도횟수를 반환
+            if (isAnswer(userInputNumber, answerList) || tryCount == MAX_TRY) {
+                return tryCount;
+            }
+        }
+    }
+    ```
 
   - 4.결론
     - 저렇게 처리하는게 올바른 로직인지는 모르겠지만 아직 이상한 부분이 많기에 고민해보고 있습니다.
