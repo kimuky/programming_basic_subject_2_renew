@@ -85,12 +85,24 @@
       <workItem from="1729682897115" duration="14318000" />
       <workItem from="1729697447357" duration="354000" />
       <workItem from="1729698013631" duration="1415000" />
-      <workItem from="1729728146988" duration="15042000" />
+      <workItem from="1729728146988" duration="15350000" />
+      <workItem from="1729747823248" duration="440000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
