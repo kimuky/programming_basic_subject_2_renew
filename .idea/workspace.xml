@@ -6,6 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="41933a8c-1323-4944-95ad-9a96f668ca58" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BaseBallGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BaseBallGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GameOption.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameOption.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GameSetting.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameSetting.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RandomNumberGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RandomNumberGenerator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +39,9 @@
     &quot;accountId&quot;: &quot;d4f84c84-a6e2-4068-a09c-ba7c90ca5c61&quot;
   }
 }</component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -86,7 +93,7 @@
       <workItem from="1729697447357" duration="354000" />
       <workItem from="1729698013631" duration="1415000" />
       <workItem from="1729728146988" duration="15350000" />
-      <workItem from="1729747823248" duration="440000" />
+      <workItem from="1729747823248" duration="2003000" />
     </task>
     <servers />
   </component>

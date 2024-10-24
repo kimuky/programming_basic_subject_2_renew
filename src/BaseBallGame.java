@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-//test1111
 public class BaseBallGame {
     Scanner sc = new Scanner(System.in);
 
@@ -11,8 +10,8 @@ public class BaseBallGame {
     }
 
     public void play(GameSetting gameSetting, RandomNumberGenerator randomNumberGenerator) {
-        boolean isRunning = true; // 메인을 돌아가게 하는 상태
-        ArrayList<Integer> tryCount = new ArrayList<>(); //시도횟수를 저장하는 콜렉션
+        boolean isRunning = true;
+        ArrayList<Integer> tryCount = new ArrayList<>();
 
         while (isRunning) {
             System.out.println("0. 게임 난이도 설정 1. 게임 시작하기 2. 게임 기록보기 3. 종료하기");
@@ -22,17 +21,17 @@ public class BaseBallGame {
             GameOption gameOption = GameOption.option(option);
 
             switch (gameOption) {
-                case SET_DIFFICULTY: //난이도 조절
+                case SET_DIFFICULTY:
                     gameSetting.setDifficulty();
                     break;
-                case START_GAME: // 게임시작
+                case START_GAME:
                     int result = gameStart(gameSetting, randomNumberGenerator); // 게임결과를 result 에 저장
                     tryCount.add(result); // 해당 결과를 콜렉션에 저장
                     break;
-                case SHOW_RECORD: // 게임기록 보기
+                case SHOW_RECORD:
                     showGameRecord(tryCount, gameSetting.getMAX_TRY());
                     break;
-                case EXIT: // 무한루프 종료
+                case EXIT:
                     isRunning = false;
                 case ERROR: // 0, 1 ,2 , 3 중 입력하지않으면 error
                     System.out.println("0, 1, 2, 3 중에 입력해주세요");
@@ -57,18 +56,12 @@ public class BaseBallGame {
             // 시도횟수 증가
             tryCount++;
 
-            // 스트라이크 볼 카운트
             int[] strikeAndBallArr = countStrikeAndBall(userInputNumber, answerList);
 
-            // 스트라이크 볼 출력
             printStrikeAndBall(strikeAndBallArr);
 
-            /* 힌트 출력
-             * 3자리수는 10, 20, 30 마다 출력
-             * 4자리수는 7, 14 ,21, 28 마다 출력
-             * 5자리수는 6, 12 ,18, 24, 60 마다 출력
-             * MAXTRY 는 파이널 상수 30
-             */
+            // TODO: 로직이 어색.. 오류는 나지 않지만 추가로 고민해볼것
+            // 현 상황에서는 버그가 나지 않지만 최소공배수 기준으로 나눠서 보여주는 방법도..
             if (tryCount % (MAX_TRY / difficulty) == 0) {
                 showHint(answerList, tryCount / (MAX_TRY / difficulty));
             }
@@ -115,16 +108,23 @@ public class BaseBallGame {
         return intNumber;
     }
 
-    // 스트라이크와 볼을 세어주는 로직
+    /** 스트라이크와 볼을 세주는 로직
+     * <pre>
+     *     strikeAndBallArr[0] 은 스트라이크, strikeAndBallArr[1] 볼
+     *     - 만약 정답리스트가 유저배열값을 들고 있으면 스트라이크 or 볼
+     *     - 거기서 같은 인덱스를 넣었을 때, 값이 똑같다면 스트라이크
+     *     - 인덱스가 다르다면 볼
+     * </pre>
+     * @param userInputNumber  유저가 입력한 숫자
+     * @param answerList 난수로 만든 정답 리스트
+     * @return  스트라이크와 볼 배열을 리턴
+     */
     private int[] countStrikeAndBall(int userInputNumber, ArrayList<Integer> answerList) {
         int[] userInputNumberArr = new int[answerList.size()];
         int index = userInputNumberArr.length - 1;
-
-        // strikeAndBallArr[0] = 스트라이크
-        // strikeAndBallArr[1] = 볼
         int[] strikeAndBallArr = new int[2];
 
-        // 사용자가 입력한 숫자배열을 int로 변환
+        // 사용자가 입력한 숫자배열을 int 로 변환
         for (int i = index; i >= 0; i--) {
             int num = userInputNumber % 10;
             userInputNumberArr[i] = num;
@@ -163,16 +163,19 @@ public class BaseBallGame {
         System.out.println(tempStr);
     }
 
-    // 힌트 출력
     private void showHint(ArrayList<Integer> answerList, int digit) {
         for (int i = 0; i < digit; i++) {
             System.out.printf("%d 번째 자리는 %d 입니다.\n", i + 1, answerList.get(i));
         }
     }
 
-    /* 게임기록 보기
-     * 최대시도횟수라면 실패
-     * 아니라면 시도횟수를 보여줌
+    /** 게임 기록 출력
+     * <pre>
+     *     맥스트라이와 시도횟수가 같다면 실패
+     *     아니면 시도횟수를 출력
+     * </pre>
+     * @param tryCount : 시도횟수
+     * @param MAX_TRY : 게임이 지정한 최대 시도횟수
      */
     private void showGameRecord(ArrayList<Integer> tryCount, int MAX_TRY) {
         if (!tryCount.isEmpty()) {
