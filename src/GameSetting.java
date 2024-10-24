@@ -6,7 +6,7 @@ public class GameSetting {
 
     public GameSetting () {
         this.difficulty = 3;
-        this.MAX_TRY = 30;
+        this.MAX_TRY = 60;
     }
 
     // getter setter 는 좋지 않은 구조 고민해볼것...
