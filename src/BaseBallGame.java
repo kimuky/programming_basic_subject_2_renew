@@ -59,7 +59,7 @@ public class BaseBallGame {
             printStrikeAndBall(strikeAndBallArr);
 
             // TODO: 로직이 어색.. 오류는 나지 않지만 추가로 고민해볼것
-            if (tryCount % (MAX_TRY / difficulty) == 0 && tryCount < MAX_TRY) {
+            if (tryCount % (MAX_TRY / difficulty) == 0) {
                 showHint(answerList, tryCount / (MAX_TRY / difficulty));
             }
 
