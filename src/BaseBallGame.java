@@ -33,6 +33,7 @@ public class BaseBallGame {
                     showGameRecord(tryCount, gameSetting.getMAX_TRY());
                     break;
                 case EXIT:
+                    System.out.println("< 숫자 야구 게임 종료 >");
                     isRunning = false;
                 case ERROR: // 0, 1 ,2 , 3 중 입력하지않으면 error
                     System.out.println("0, 1, 2, 3 중에 입력해주세요");
@@ -65,6 +66,7 @@ public class BaseBallGame {
 
             // 종료 로직, 정답 이거나 종료횟수까지 맞추지 못하면 시도횟수를 반환
             if (isAnswer(userInputNumber, answerList) ) {
+                System.out.println("정답!");
                 break;
             }
         }
