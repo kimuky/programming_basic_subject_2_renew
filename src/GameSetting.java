@@ -9,7 +9,7 @@ public class GameSetting {
         this.MAX_TRY = 60;
     }
 
-    // getter setter 는 좋지 않은 구조 고민해볼것...
+    //TODO : getter setter 는 좋지 않은 구조 고민해볼것...
     public void setDifficulty() {
         this.difficulty = controlDifficulty();
     }

@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
-// gitTest 4
+
 public class BaseBallGame {
     Scanner sc = new Scanner(System.in);
 
@@ -20,6 +20,7 @@ public class BaseBallGame {
             // option 을 enum 을 통해 관리
             GameOption gameOption = GameOption.option(option);
 
+            //TODO 저렇게 gameSetting 을 파라미터로 옮기는게 나을지 아니면 전역변수로 둘지..
             switch (gameOption) {
                 case SET_DIFFICULTY:
                     gameSetting.setDifficulty();
@@ -45,11 +46,9 @@ public class BaseBallGame {
         int MAX_TRY = gameSetting.getMAX_TRY();
         int tryCount = 0;
 
-        // 난수를 answerList 에 저장
         ArrayList<Integer> answerList = randomNumberGenerator.generateNumber(difficulty);
 
-        // 맞출때까지 무한루프
-        while (true) {
+        while (tryCount< MAX_TRY) {
             // 유저 입력
             int userInputNumber = inputAnswer(difficulty);
 
@@ -57,20 +56,19 @@ public class BaseBallGame {
             tryCount++;
 
             int[] strikeAndBallArr = countStrikeAndBall(userInputNumber, answerList);
-
             printStrikeAndBall(strikeAndBallArr);
 
             // TODO: 로직이 어색.. 오류는 나지 않지만 추가로 고민해볼것
-            // 현 상황에서는 버그가 나지 않지만 최소공배수 기준으로 나눠서 보여주는 방법도..
             if (tryCount % (MAX_TRY / difficulty) == 0 && tryCount < MAX_TRY) {
                 showHint(answerList, tryCount / (MAX_TRY / difficulty));
             }
 
             // 종료 로직, 정답 이거나 종료횟수까지 맞추지 못하면 시도횟수를 반환
-            if (isAnswer(userInputNumber, answerList) || tryCount == MAX_TRY) {
-                return tryCount;
+            if (isAnswer(userInputNumber, answerList) ) {
+                break;
             }
         }
+        return tryCount;
     }
 
     // 유저가 문제없는 값을 입력할 때까지 무한 루프
@@ -91,7 +89,6 @@ public class BaseBallGame {
         }
     }
 
-    // 정답판별
     private boolean isAnswer(int userInputNumber, ArrayList<Integer> answerList) {
         int answerNumber = listNumberToIntNumber(answerList);
         return answerNumber == userInputNumber;
@@ -131,7 +128,6 @@ public class BaseBallGame {
             userInputNumber /= 10;
         }
 
-        // 스트라이크 볼 판별
         for (int i = 0; i < answerList.size(); i++) {
             if (answerList.contains(userInputNumberArr[i])) {
                 if (userInputNumberArr[i] == answerList.get(i)) {
@@ -144,7 +140,6 @@ public class BaseBallGame {
         return strikeAndBallArr;
     }
 
-    // 스트라이크 볼 출력
     private void printStrikeAndBall(int[] strikeAndBallArr) {
         StringBuilder tempStr = new StringBuilder();
         int strike = strikeAndBallArr[0];
