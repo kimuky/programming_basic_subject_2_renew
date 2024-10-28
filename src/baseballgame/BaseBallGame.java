@@ -1,42 +1,43 @@
+package baseballgame;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class BaseBallGame {
-    Scanner sc = new Scanner(System.in);
-
-    public static void main(String[] args) {
-        BaseBallGame baseBallGame = new BaseBallGame();
-        baseBallGame.play(new GameSetting(), new RandomNumberGenerator());
-    }
+    // 상수 -> 변하지 않는 것
+    // 이유 :
+    final Scanner sc = new Scanner(System.in);
 
     public void play(GameSetting gameSetting, RandomNumberGenerator randomNumberGenerator) {
         boolean isRunning = true;
-        ArrayList<Integer> tryCount = new ArrayList<>();
+        final List<Integer> tryCount = new ArrayList<>();
 
         while (isRunning) {
             System.out.println("0. 게임 난이도 설정 1. 게임 시작하기 2. 게임 기록보기 3. 종료하기");
             String option = sc.nextLine();
 
             // option 을 enum 을 통해 관리
-            GameOption gameOption = GameOption.option(option);
+            try {
+                final GameOption gameOption = GameOption.option(option);
 
-            //TODO 저렇게 gameSetting 을 파라미터로 옮기는게 나을지 아니면 전역변수로 둘지..
-            switch (gameOption) {
-                case SET_DIFFICULTY:
-                    gameSetting.setDifficulty();
-                    break;
-                case START_GAME:
-                    int result = gameStart(gameSetting, randomNumberGenerator); // 게임결과를 result 에 저장
-                    tryCount.add(result); // 해당 결과를 콜렉션에 저장
-                    break;
-                case SHOW_RECORD:
-                    showGameRecord(tryCount, gameSetting.getMAX_TRY());
-                    break;
-                case EXIT:
-                    System.out.println("< 숫자 야구 게임 종료 >");
-                    isRunning = false;
-                case ERROR: // 0, 1 ,2 , 3 중 입력하지않으면 error
-                    System.out.println("0, 1, 2, 3 중에 입력해주세요");
+                switch (gameOption) {
+                    case SET_DIFFICULTY:
+                        gameSetting.setDifficulty();
+                        break;
+                    case START_GAME:
+                        int result = gameStart(gameSetting, randomNumberGenerator); // 게임결과를 result 에 저장
+                        tryCount.add(result); // 해당 결과를 콜렉션에 저장
+                        break;
+                    case SHOW_RECORD:
+                        showGameRecord(tryCount, gameSetting.getMAX_TRY());
+                        break;
+                    case EXIT:
+                        System.out.println("< 숫자 야구 게임 종료 >");
+                        isRunning = false;
+                }
+            } catch (MyOptionException e) {
+                System.out.println(e.getMessage());
             }
         }
     }
@@ -148,14 +149,15 @@ public class BaseBallGame {
         int ball = strikeAndBallArr[1];
 
         // 한줄로 출력해주기 위해 이런 로직
-        if (strike > 0) {
-            tempStr.append(strike).append(" 스트라이크");
-        }
-        if (ball > 0) {
-            tempStr.append(ball).append(" 볼");
-        }
         if (strike == 0 && ball == 0) {
             tempStr.append("아웃");
+        } else {
+            if (strike > 0) {
+                tempStr.append(strike).append(" 스트라이크");
+            }
+            if (ball > 0) {
+                tempStr.append(ball).append(" 볼");
+            }
         }
         System.out.println(tempStr);
     }
@@ -174,7 +176,7 @@ public class BaseBallGame {
      * @param tryCount : 시도횟수
      * @param MAX_TRY : 게임이 지정한 최대 시도횟수
      */
-    private void showGameRecord(ArrayList<Integer> tryCount, int MAX_TRY) {
+    private void showGameRecord(List<Integer> tryCount, int MAX_TRY) {
         if (!tryCount.isEmpty()) {
             int index = 1;
             for (Integer i : tryCount) {

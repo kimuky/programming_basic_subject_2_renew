@@ -387,8 +387,8 @@
       - 3자리수가 힌트 제공은 시도횟수가 (20, 40, 60) 때 제공
       - 4자리수가 힌트 제공은 시도횟수가 (15, 30, 45, 60) 때 제공
       - 5자리수가 힌트 제공은 시도횟수가 (12, 24, 36, 48 , 60) 때 제공
-    - 
-      
+    -
+
     ```java
     // 해당 로직을 수정
     if (tryCount % (MAX_TRY / difficulty) == 0 && tryCount < MAX_TRY) {
@@ -397,7 +397,7 @@
     ```
 
     ```java
-    // 전체 로직
+import baseballgame.GameSetting;     // 전체 로직
       private int gameStart(GameSetting gameSetting, RandomNumberGenerator randomNumberGenerator) {
         // 난이도와 종료 횟수 지정
         int difficulty = gameSetting.getDifficulty();
