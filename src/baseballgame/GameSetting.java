@@ -1,3 +1,5 @@
+package baseballgame;
+
 import java.util.Scanner;
 
 public class GameSetting {
@@ -27,14 +29,11 @@ public class GameSetting {
 
         System.out.println("난이도를 설정해주세요 3,4,5");
         String difficulty = sc.nextLine();
-        return switch (difficulty) {
-            case "3" -> 3;
-            case "4" -> 4;
-            case "5" -> 5;
-            default -> {
-                System.out.printf("잘못 입력하셨습니다. 기존 난이도 %d으로 설정하겠습니다.\n", this.difficulty);
-                yield this.difficulty;
-            }
-        };
+
+        try {
+            return Integer.parseInt(difficulty);
+        } catch (NumberFormatException e) {
+            return this.difficulty;
+        }
     }
 }
