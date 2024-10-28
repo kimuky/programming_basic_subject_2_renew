@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="41933a8c-1323-4944-95ad-9a96f668ca58" name="Changes" comment="fix read me">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/baseballgame/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/baseballgame/MyOptionException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BaseBallGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/baseballgame/BaseBallGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GameOption.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/baseballgame/GameOption.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GameSetting.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/baseballgame/GameSetting.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RandomNumberGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/baseballgame/RandomNumberGenerator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,7 +116,7 @@
       <workItem from="1729840578364" duration="732000" />
       <workItem from="1730082780878" duration="609000" />
       <workItem from="1730104168977" duration="225000" />
-      <workItem from="1730105751634" duration="9518000" />
+      <workItem from="1730105751634" duration="11542000" />
     </task>
     <task id="LOCAL-00001" summary="fix read me">
       <option name="closed" value="true" />
